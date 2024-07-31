@@ -1,0 +1,12 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'gcr.io/kunal-ica1/smart_hire', '.' ]
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'push', 'gcr.io/kunal-ica1/smart_hire' ]
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: [ 'run', 'deploy', 'smart_hire', '--image', 'gcr.io/kunal-ica1/smart_hire', '--platform', 'managed', '--region', 'us-central1', '--allow-unauthenticated' ]
+
+images:
+- 'gcr.io/kunal-ica1/smart_hire'
