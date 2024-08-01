@@ -1,18 +1,45 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/kunal-ica1/text-generator:latest', '.']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/kunal-ica1/text-generator:latest']
+  # Step 1: Check if the cluster exists
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        # Update kubeconfig
-        gcloud container clusters get-credentials my-cluster --zone us-central1-a --project $PROJECT_ID
-        # Apply Kubernetes manifests
+        if ! gcloud container clusters describe my-cluster --zone us-central1-a --project kunal-ica1; then
+          echo "Cluster does not exist. Creating cluster."
+          gcloud container clusters create my-cluster \
+              --zone us-central1-a \
+              --num-nodes 1 \
+              --enable-autoscaling --min-nodes=1 --max-nodes=5 \
+              --scopes "https://www.googleapis.com/auth/cloud-platform"
+        else
+          echo "Cluster exists. Proceeding with deployment."
+        fi
+
+  # Step 2: Configure kubectl to use the cluster
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud container clusters get-credentials my-cluster --zone us-central1-a --project kunal-ica1
+  # Step 3: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/kunal-ica1/text-generator:latest', '.']
+
+  # Step 4: Push the Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/kunal-ica1/text-generator:latest']
+
+  # Step 5: Apply Kubernetes manifests
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
+
 images:
   - 'gcr.io/kunal-ica1/text-generator:latest'
 options:
