@@ -1,6 +1,6 @@
 steps:
   # Step 1: Check if the cluster exists
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -17,7 +17,7 @@ steps:
         fi
 
   # Step 2: Configure kubectl to use the cluster
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -25,7 +25,7 @@ steps:
         gcloud container clusters get-credentials my-cluster --zone us-central1-a --project $PROJECT_ID
 
   # Step 3: Create the dev namespace if it doesn't exist
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -41,5 +41,6 @@ images:
   - 'gcr.io/$PROJECT_ID/text-generator:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
+timeout: "1200s"
 substitutions:
   _PROJECT_ID: "kunal-ica1"
