@@ -30,6 +30,8 @@ steps:
       - 'run'
       - '--default-repo=gcr.io/kunal-ica1'
       - '--profile=dev'
+    env:
+      - 'SKAFFOLD_LOG_FILE=/workspace/skaffold.log'
 
 images:
   - 'gcr.io/kunal-ica1/text-generator:latest'
