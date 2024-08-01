@@ -3,21 +3,28 @@ import requests
 
 app = Flask(__name__)
 
-ENDPOINT_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAcCFqcSUUsXNJYcBw0oPdlaLEitlxiyfc"
+API_KEY = "AIzaSyD4_2KK1Z8LHvQMKcSHrr44qoQk5VyCQMk"
+ENDPOINT_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + API_KEY
 
 def generate_text(prompt):
     headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {API_KEY}"
+        "Content-Type": "application/json"
     }
     data = {
-        "instances": [{"content": prompt}]
+        "contents": [{"parts": [{"text": prompt}]}]
     }
     response = requests.post(ENDPOINT_URL, headers=headers, json=data)
     response_json = response.json()
+
+    # Print the response for debugging
+    print(response_json)
+
+    # Check if 'contents' and 'parts' are in the response
+    if 'candidates' in response_json and 'content' in response_json['candidates'][0]:
+        generated_text = response_json['candidates'][0]['content']['parts'][0].get('text', 'No text generated')
+    else:
+        generated_text = 'Error: Invalid response structure'
     
-    # Extract and return the generated text from the response
-    generated_text = response_json['predictions'][0]['generated_text']
     return generated_text
 
 @app.route('/')
