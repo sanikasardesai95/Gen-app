@@ -24,13 +24,14 @@ steps:
       - |
         gcloud container clusters get-credentials my-cluster --zone us-central1-a --project $PROJECT_ID
 
-  # Step 3: Create the dev namespace if it doesn't exist
+  # Step 3: Create the namespaces if they don't exist
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
         kubectl get namespace dev || kubectl create namespace dev
+        kubectl get namespace prod || kubectl create namespace prod
 
   # Step 4: Build the Docker image using Cloud Build
   - name: 'gcr.io/cloud-builders/docker'
@@ -40,33 +41,17 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/text-generator:latest']
 
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['deploy', 'apply', '--file=clouddeploy.yaml', '--region=us-central1']
-
-  # Step 5: Deploy to Cloud Deploy pipeline
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  # Step 6: Deploy using Skaffold
+  - name: 'gcr.io/k8s-skaffold/skaffold:v2.13.1'
     entrypoint: 'bash'
     args:
-    - '-c'
-    - >
-       gcloud deploy releases create release-$BUILD_ID
-       --delivery-pipeline=text-generator-pipeline
-       --region=us-central1
-       --source=./
-       --images=text-generator=gcr.io/$PROJECT_ID/text-generator:latest
-
-  # # Step 6: Deploy using Skaffold
-  # - name: 'gcr.io/k8s-skaffold/skaffold:v2.13.1'
-  #   entrypoint: 'bash'
-  #   args:
-  #     - '-c'
-  #     - |
-  #       skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=dev
+      - '-c'
+      - |
+        skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=dev
 
 images:
   - 'gcr.io/$PROJECT_ID/text-generator:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
-timeout: "1200s"
 substitutions:
   _PROJECT_ID: "kunal-ica1"
