@@ -1,17 +1,13 @@
-# Use the official Python image from the Docker Hub
+# Use the official lightweight Python image.
 FROM python:3.9-slim
 
-# Set the working directory
-WORKDIR /app
-
-# Copy the requirements file
-COPY requirements.txt requirements.txt
-
-# Install the dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
 COPY . .
 
-# Specify the command to run the application
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]
+# Install production dependencies.
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Run the web service on container startup.
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:app"]
