@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: text-generator
+  name: text-generator-prod
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: text-generator
@@ -17,8 +17,3 @@ spec:
         image: gcr.io/kunal-ica1/text-generator:latest
         ports:
         - containerPort: 8080
-        env:
-        - name: PORT
-          value: "8080"
-        - name: API_KEY
-          value: AIzaSyD4_2KK1Z8LHvQMKcSHrr44qoQk5VyCQMk

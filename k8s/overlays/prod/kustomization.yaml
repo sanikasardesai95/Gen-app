@@ -1,9 +1,0 @@
-resources:
-  - ../../base
-
-namespace: prod
-
-images:
-  - name: gcr.io/kunal-ica1/text-generator
-    newName: gcr.io/kunal-ica1/text-generator
-    newTag: prod

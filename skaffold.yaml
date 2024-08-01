@@ -1,24 +1,25 @@
-apiVersion: skaffold/v2beta29
+apiVersion: skaffold/v2beta26
 kind: Config
 metadata:
-  name: text-generator
+  name: smart-hire
 build:
   artifacts:
-    - image: gcr.io/kunal-ica1/text-generator
-  googleCloudBuild:
-    projectId: kunal-ica1
+    - image: gcr.io/kunal-ica1/smart-hire
 deploy:
-  kustomize:
-    paths:
-      - ./k8s
+  kubectl:
+    manifests:
+      - kubernetes/deployment.dev.yaml
+      - kubernetes/service.yaml
 profiles:
   - name: dev
     deploy:
-      kustomize:
-        paths:
-          - ./k8s/overlays/dev
+      kubectl:
+        manifests:
+          - kubernetes/deployment.dev.yaml
+          - kubernetes/service.yaml
   - name: prod
     deploy:
-      kustomize:
-        paths:
-          - ./k8s/overlays/prod
+      kubectl:
+        manifests:
+          - kubernetes/deployment.prod.yaml
+          - kubernetes/service.yaml
