@@ -5,7 +5,10 @@ steps:
     args: ['push', 'gcr.io/kunal-ica1/text-generator:latest']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
-    args: ['run', 'deploy', 'text-generator', '--image', 'gcr.io/kunal-ica1/text-generator:latest', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated', '--quiet']
+    args: ['kubectl', 'apply', '-f', 'k8s/deployment.yaml']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: ['kubectl', 'apply', '-f', 'k8s/service.yaml']
 images:
   - 'gcr.io/kunal-ica1/text-generator:latest'
 options:
