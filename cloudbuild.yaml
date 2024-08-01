@@ -1,14 +1,12 @@
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'build', '-t', 'gcr.io/kunal-ica1/gen-app', '.' ]
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: [ 'push', 'gcr.io/kunal-ica1/gen-app' ]
-
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: [ 'run', 'deploy', 'smart_hire', '--image', 'gcr.io/kunal-ica1/gen-app', '--platform', 'managed', '--region', 'us-central1', '--allow-unauthenticated' ]
-
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/kunal-ica1/text-generator:latest', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/kunal-ica1/text-generator:latest']
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: ['run', 'deploy', 'text-generator', '--image', 'gcr.io/kunal-ica1/text-generator:latest', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated']
 images:
-- 'gcr.io/kunal-ica1/gen-app'
+  - 'gcr.io/kunal-ica1/text-generator:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
