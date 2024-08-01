@@ -24,7 +24,15 @@ steps:
       - |
         gcloud container clusters get-credentials my-cluster --zone us-central1-a --project $PROJECT_ID
 
-  # Step 3: Build and deploy using Skaffold
+  # Step 3: Create the dev namespace if it doesn't exist
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        kubectl get namespace dev || kubectl create namespace dev
+
+  # Step 4: Build and deploy using Skaffold
   - name: 'gcr.io/k8s-skaffold/skaffold:v2.13.1'
     entrypoint: 'skaffold'
     args: ['run', '--default-repo=gcr.io/$PROJECT_ID', '--profile=dev']
