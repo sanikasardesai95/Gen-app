@@ -1,6 +1,6 @@
 steps:
   # Step 1: Check if the cluster exists
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -17,7 +17,7 @@ steps:
         fi
 
   # Step 2: Configure kubectl to use the cluster
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
     entrypoint: 'bash'
     args:
       - '-c'
@@ -25,7 +25,8 @@ steps:
         gcloud container clusters get-credentials my-cluster --zone us-central1-a --project $PROJECT_ID
 
   # Step 3: Build and deploy using Skaffold
-  - name: 'gcr.io/k8s-skaffold/skaffold:latest'
+  - name: 'gcr.io/k8s-skaffold/skaffold:v1.35.0'
+    entrypoint: 'skaffold'
     args: ['run', '--default-repo=gcr.io/$PROJECT_ID', '--profile=dev']
 
 images:
