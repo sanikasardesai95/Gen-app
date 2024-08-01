@@ -5,7 +5,7 @@ steps:
     args:
       - '-c'
       - |
-        if ! gcloud container clusters describe my-cluster --zone us-central1-a --project kunal-ica1; then
+        if ! gcloud container clusters describe my-cluster --zone us-central1-a --project $PROJECT_ID; then
           echo "Cluster does not exist. Creating cluster."
           gcloud container clusters create my-cluster \
               --zone us-central1-a \
@@ -22,18 +22,15 @@ steps:
     args:
       - '-c'
       - |
-        gcloud container clusters get-credentials my-cluster --zone us-central1-a --project kunal-ica1
+        gcloud container clusters get-credentials my-cluster --zone us-central1-a --project $PROJECT_ID
 
   # Step 3: Build and deploy using Skaffold
-  - name: 'gcr.io/k8s-skaffold/skaffold'
-    args:
-      - 'run'
-      - '--default-repo=gcr.io/kunal-ica1'
-      - '--profile=dev'
-    env:
-      - 'SKAFFOLD_LOG_FILE=/workspace/skaffold.log'
+  - name: 'gcr.io/k8s-skaffold/skaffold:latest'
+    args: ['run', '--default-repo=gcr.io/$PROJECT_ID', '--profile=dev']
 
 images:
-  - 'gcr.io/kunal-ica1/text-generator:latest'
+  - 'gcr.io/$PROJECT_ID/text-generator:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _PROJECT_ID: "kunal-ica1"
