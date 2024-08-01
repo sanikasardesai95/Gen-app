@@ -25,7 +25,7 @@ steps:
         gcloud container clusters get-credentials my-cluster --zone us-central1-a --project $PROJECT_ID
 
   # Step 3: Build and deploy using Skaffold
-  - name: 'gcr.io/k8s-skaffold/skaffold:v1.35.0'
+  - name: 'gcr.io/k8s-skaffold/skaffold:v2.13.1'
     entrypoint: 'skaffold'
     args: ['run', '--default-repo=gcr.io/$PROJECT_ID', '--profile=dev']
 
