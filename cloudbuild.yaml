@@ -5,3 +5,5 @@ steps:
     args: ['push', 'gcr.io/kunal-ica1/text-generator:latest']
 images:
   - 'gcr.io/kunal-ica1/text-generator:latest'
+options:
+  logging: CLOUD_LOGGING_ONLY
