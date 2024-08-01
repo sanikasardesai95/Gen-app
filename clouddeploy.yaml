@@ -7,13 +7,11 @@ serialPipeline:
   stages:
   - name: dev
     targetId: dev
-    profiles: []
     strategy:
       standard:
         verify: {}
   - name: prod
     targetId: prod
-    profiles: []
     strategy:
       standard:
         verify: {}
@@ -37,13 +35,3 @@ gke:
   cluster: projects/kunal-ica1/locations/us-central1-a/clusters/my-cluster
   location: us-central1-a
   namespace: prod
----
-apiVersion: deploy.cloud.google.com/v1
-kind: Release
-metadata:
-  name: text-generator-release
-annotations:
-  deploy.cloud.google.com/target: dev
-deliveryPipeline: text-generator-pipeline
-skaffold:
-  filePath: skaffold.yaml

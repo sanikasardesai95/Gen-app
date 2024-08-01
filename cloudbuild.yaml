@@ -49,23 +49,10 @@ steps:
       - |
         skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=dev
 
-  # Previous steps omitted for brevity
-
-  # Step 7: Create a release in Cloud Deploy
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud deploy releases create text-generator-release-$BUILD_ID \
-        --delivery-pipeline=text-generator-pipeline \
-        --region=us-central1 \
-        --images=gcr.io/$PROJECT_ID/text-generator=gcr.io/$PROJECT_ID/text-generator:latest
-
 images:
   - 'gcr.io/$PROJECT_ID/text-generator:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
+timeout: "1200s"
 substitutions:
   _PROJECT_ID: "kunal-ica1"
-
