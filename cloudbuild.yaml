@@ -4,11 +4,15 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/kunal-ica1/text-generator:latest']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args: ['kubectl', 'apply', '-f', 'k8s/deployment.yaml']
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args: ['kubectl', 'apply', '-f', 'k8s/service.yaml']
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        # Update kubeconfig
+        gcloud container clusters get-credentials my-cluster --zone us-central1-a --project $PROJECT_ID
+        # Apply Kubernetes manifests
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
 images:
   - 'gcr.io/kunal-ica1/text-generator:latest'
 options:
