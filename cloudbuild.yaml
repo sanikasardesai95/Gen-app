@@ -41,7 +41,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/text-generator:latest']
 
-  # Step 6: Deploy using Skaffold
+  # Step 6: Deploy to dev using Skaffold
   - name: 'gcr.io/k8s-skaffold/skaffold:v2.13.1'
     entrypoint: 'bash'
     args:
@@ -49,9 +49,18 @@ steps:
       - |
         skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=dev
 
+  # Step 7: Deploy to prod using Skaffold
+  - name: 'gcr.io/k8s-skaffold/skaffold:v2.13.1'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=prod
+
 images:
   - 'gcr.io/$PROJECT_ID/text-generator:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
+
 substitutions:
   _PROJECT_ID: "kunal-ica1"
