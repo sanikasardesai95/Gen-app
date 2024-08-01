@@ -9,7 +9,7 @@ steps:
           echo "Cluster does not exist. Creating cluster."
           gcloud container clusters create my-cluster \
               --zone us-central1-a \
-              --num-nodes 1 \
+              --num-nodes 3 \
               --enable-autoscaling --min-nodes=1 --max-nodes=5 \
               --scopes "https://www.googleapis.com/auth/cloud-platform"
         else
@@ -23,22 +23,13 @@ steps:
       - '-c'
       - |
         gcloud container clusters get-credentials my-cluster --zone us-central1-a --project kunal-ica1
-  # Step 3: Build the Docker image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/kunal-ica1/text-generator:latest', '.']
 
-  # Step 4: Push the Docker image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/kunal-ica1/text-generator:latest']
-
-  # Step 5: Apply Kubernetes manifests
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'bash'
+  # Step 3: Build and deploy using Skaffold
+  - name: 'gcr.io/k8s-skaffold/skaffold'
     args:
-      - '-c'
-      - |
-        kubectl apply -f k8s/deployment.yaml
-        kubectl apply -f k8s/service.yaml
+      - 'run'
+      - '--default-repo=gcr.io/kunal-ica1'
+      - '--profile=dev'
 
 images:
   - 'gcr.io/kunal-ica1/text-generator:latest'

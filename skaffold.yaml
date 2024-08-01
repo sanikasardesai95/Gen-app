@@ -1,0 +1,24 @@
+apiVersion: skaffold/v2beta29
+kind: Config
+metadata:
+  name: text-generator
+build:
+  artifacts:
+    - image: gcr.io/kunal-ica1/text-generator
+  googleCloudBuild:
+    projectId: kunal-ica1
+deploy:
+  kustomize:
+    paths:
+      - ./k8s
+profiles:
+  - name: dev
+    deploy:
+      kustomize:
+        paths:
+          - ./k8s/overlays/dev
+  - name: prod
+    deploy:
+      kustomize:
+        paths:
+          - ./k8s/overlays/prod
