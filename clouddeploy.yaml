@@ -1,0 +1,49 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: DeliveryPipeline
+metadata:
+  name: text-generator-pipeline
+description: Pipeline for deploying the text generator application
+serialPipeline:
+  stages:
+  - name: dev
+    targetId: dev
+    profiles: []
+    strategy:
+      standard:
+        verify: {}
+  - name: prod
+    targetId: prod
+    profiles: []
+    strategy:
+      standard:
+        verify: {}
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: dev
+description: Development environment
+gke:
+  cluster: projects/kunal-ica1/locations/us-central1-a/clusters/my-cluster
+  location: us-central1-a
+  namespace: dev
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: prod
+description: Production environment
+gke:
+  cluster: projects/kunal-ica1/locations/us-central1-a/clusters/my-cluster
+  location: us-central1-a
+  namespace: prod
+---
+apiVersion: deploy.cloud.google.com/v1
+kind: Release
+metadata:
+  name: text-generator-release
+annotations:
+  deploy.cloud.google.com/target: dev
+deliveryPipeline: text-generator-pipeline
+skaffold:
+  filePath: skaffold.yaml
