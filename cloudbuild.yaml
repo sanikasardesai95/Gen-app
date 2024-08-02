@@ -49,15 +49,6 @@ steps:
       - |
         skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=dev
 
-  # Step 7: Generate a valid release name for dev
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        BUILD_ID_SANITIZED=$(echo "$BUILD_ID" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
-        DEV_RELEASE_NAME="text-generator-release-dev-${BUILD_ID_SANITIZED}"
-        echo "$DEV_RELEASE_NAME" > /workspace/dev_release_name.txt
 
   # Step 8: Create a release in Cloud Deploy for dev
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -80,15 +71,6 @@ steps:
       - |
         skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=non-prod
 
-  # Step 10: Generate a valid release name for non-prod
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        BUILD_ID_SANITIZED=$(echo "$BUILD_ID" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
-        NON_PROD_RELEASE_NAME="text-generator-release-non-prod-${BUILD_ID_SANITIZED}"
-        echo "$NON_PROD_RELEASE_NAME" > /workspace/non_prod_release_name.txt
 
   # Step 11: Create a release in Cloud Deploy for non-prod
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
