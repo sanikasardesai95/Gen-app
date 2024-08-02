@@ -1,28 +1,37 @@
 apiVersion: deploy.cloud.google.com/v1
 kind: DeliveryPipeline
 metadata:
-  name: smart-hire-pipeline
-  serialPipeline:
-    stages:
-      - name: dev
-        targetId: smart-hire-dev
-      - name: prod
-        targetId: smart-hire-prod
+  name: text-generator-pipeline
+description: Pipeline for deploying the text generator application
+serialPipeline:
+  stages:
+    - targetId: dev
+      profiles:
+        - dev
+      strategy:
+        standard: {}
+    - targetId: prod
+      profiles:
+        - prod
+      strategy:
+        standard: {}
 ---
 apiVersion: deploy.cloud.google.com/v1
 kind: Target
 metadata:
-  name: smart-hire-dev
-  gke:
-    cluster: projects/kunal-ica1/locations/us-central1/clusters/your-cluster-name
-    location: us-central1
-    clusterNamespace: dev
+  name: dev
+description: Development environment
+requireApproval: true
+gke:
+  cluster: projects/kunal-ica1/locations/us-central1-a/clusters/my-cluster
+ 
 ---
 apiVersion: deploy.cloud.google.com/v1
 kind: Target
 metadata:
-  name: smart-hire-prod
-  gke:
-    cluster: projects/kunal-ica1/locations/us-central1/clusters/your-cluster-name
-    location: us-central1
-    clusterNamespace: prod
+  name: prod
+description: production environment
+requireApproval: true
+gke:
+  cluster: projects/kunal-ica1/locations/us-central1-a/clusters/my-cluster
+

@@ -1,0 +1,9 @@
+resources:
+  - ../../base
+
+namespace: dev
+
+images:
+  - name: gcr.io/kunal-ica1/text-generator
+    newName: gcr.io/kunal-ica1/text-generator
+    newTag: dev
