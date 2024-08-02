@@ -47,7 +47,7 @@ steps:
     args:
       - '-c'
       - |
-        skaffold deploy -p dev --default-repo=gcr.io/$PROJECT_ID
+        skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=dev
 
   # Step 7: Generate a valid release name for dev
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -77,7 +77,7 @@ steps:
     args:
       - '-c'
       - |
-        skaffold deploy -p non-prod --default-repo=gcr.io/$PROJECT_ID
+        skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=non-prod
 
   # Step 10: Generate a valid release name for non-prod
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -105,7 +105,5 @@ images:
   - 'gcr.io/$PROJECT_ID/text-generator:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
-timeout: "1200s"
-serviceAccount: "cloudbuild-sa@kunal-ica1.iam.gserviceaccount.com"
 substitutions:
   _PROJECT_ID: "kunal-ica1"
