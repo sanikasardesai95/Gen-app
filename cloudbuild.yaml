@@ -49,32 +49,56 @@ steps:
       - |
         skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=dev
 
-  # Step 7: Create a release in Cloud Deploy for dev
+  # Step 7: Generate a valid release name for dev
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        gcloud deploy releases create --delivery-pipeline=text-generator-pipeline \
+        BUILD_ID_SANITIZED=$(echo "$BUILD_ID" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
+        DEV_RELEASE_NAME="text-generator-release-dev-${BUILD_ID_SANITIZED}"
+        echo "$DEV_RELEASE_NAME" > /workspace/dev_release_name.txt
+
+  # Step 8: Create a release in Cloud Deploy for dev
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        DEV_RELEASE_NAME=$(cat /workspace/dev_release_name.txt)
+        gcloud deploy releases create "$DEV_RELEASE_NAME" \
+        --delivery-pipeline=text-generator-pipeline \
         --region=us-central1 \
         --images=gcr.io/$PROJECT_ID/text-generator=gcr.io/$PROJECT_ID/text-generator:latest \
         --to-target=dev
 
-  # Step 8: Deploy to non-prod environment using Skaffold
+  # Step 9: Deploy to non-prod environment using Skaffold
   - name: 'gcr.io/k8s-skaffold/skaffold:v2.13.1'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=non-prod
+        skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=prod
 
-  # Step 9: Create a release in Cloud Deploy for non-prod
+  # Step 10: Generate a valid release name for non-prod
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        gcloud deploy releases create --delivery-pipeline=text-generator-pipeline \
+        BUILD_ID_SANITIZED=$(echo "$BUILD_ID" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
+        PROD_RELEASE_NAME="text-generator-release-prod-${BUILD_ID_SANITIZED}"
+        echo "$PROD_RELEASE_NAME" > /workspace/prod_release_name.txt
+
+  # Step 11: Create a release in Cloud Deploy for non-prod
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        PROD_RELEASE_NAME=$(cat /workspace/prod_release_name.txt)
+        gcloud deploy releases create "$PROD_RELEASE_NAME" \
+        --delivery-pipeline=text-generator-pipeline \
         --region=us-central1 \
         --images=gcr.io/$PROJECT_ID/text-generator=gcr.io/$PROJECT_ID/text-generator:latest \
         --to-target=prod
@@ -83,5 +107,7 @@ images:
   - 'gcr.io/$PROJECT_ID/text-generator:latest'
 options:
   logging: CLOUD_LOGGING_ONLY
+timeout: "1200s"
+serviceAccount: "cloudbuild-sa@kunal-ica1.iam.gserviceaccount.com"
 substitutions:
   _PROJECT_ID: "kunal-ica1"
