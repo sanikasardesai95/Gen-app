@@ -55,8 +55,9 @@ steps:
     args:
       - '-c'
       - |
-        BUILD_ID_SANITIZED=$(echo $BUILD_ID | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
-        echo "text-generator-release-dev-${BUILD_ID_SANITIZED}" > /workspace/dev_release_name.txt
+        BUILD_ID_SANITIZED=$(echo "$BUILD_ID" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
+        DEV_RELEASE_NAME="text-generator-release-dev-${BUILD_ID_SANITIZED}"
+        echo "$DEV_RELEASE_NAME" > /workspace/dev_release_name.txt
 
   # Step 8: Create a release in Cloud Deploy for dev
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -65,7 +66,7 @@ steps:
       - '-c'
       - |
         DEV_RELEASE_NAME=$(cat /workspace/dev_release_name.txt)
-        gcloud deploy releases create $DEV_RELEASE_NAME \
+        gcloud deploy releases create "$DEV_RELEASE_NAME" \
         --delivery-pipeline=text-generator-pipeline \
         --region=us-central1 \
         --images=gcr.io/$PROJECT_ID/text-generator=gcr.io/$PROJECT_ID/text-generator:latest \
@@ -85,8 +86,9 @@ steps:
     args:
       - '-c'
       - |
-        BUILD_ID_SANITIZED=$(echo $BUILD_ID | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
-        echo "text-generator-release-non-prod-${BUILD_ID_SANITIZED}" > /workspace/non_prod_release_name.txt
+        BUILD_ID_SANITIZED=$(echo "$BUILD_ID" | tr '[:upper:]' '[:lower:]' | tr -cd 'a-z0-9-')
+        NON_PROD_RELEASE_NAME="text-generator-release-non-prod-${BUILD_ID_SANITIZED}"
+        echo "$NON_PROD_RELEASE_NAME" > /workspace/non_prod_release_name.txt
 
   # Step 11: Create a release in Cloud Deploy for non-prod
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -95,7 +97,7 @@ steps:
       - '-c'
       - |
         NON_PROD_RELEASE_NAME=$(cat /workspace/non_prod_release_name.txt)
-        gcloud deploy releases create $NON_PROD_RELEASE_NAME \
+        gcloud deploy releases create "$NON_PROD_RELEASE_NAME" \
         --delivery-pipeline=text-generator-pipeline \
         --region=us-central1 \
         --images=gcr.io/$PROJECT_ID/text-generator=gcr.io/$PROJECT_ID/text-generator:latest \
