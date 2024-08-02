@@ -49,21 +49,18 @@ steps:
       - |
         skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=dev
 
-
-  # Step 8: Create a release in Cloud Deploy for dev
+  # Step 7: Create a release in Cloud Deploy for dev
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        DEV_RELEASE_NAME=$(cat /workspace/dev_release_name.txt)
-        gcloud deploy releases create "$DEV_RELEASE_NAME" \
-        --delivery-pipeline=text-generator-pipeline \
+        gcloud deploy releases create --delivery-pipeline=text-generator-pipeline \
         --region=us-central1 \
         --images=gcr.io/$PROJECT_ID/text-generator=gcr.io/$PROJECT_ID/text-generator:latest \
         --targets=dev
 
-  # Step 9: Deploy to non-prod environment using Skaffold
+  # Step 8: Deploy to non-prod environment using Skaffold
   - name: 'gcr.io/k8s-skaffold/skaffold:v2.13.1'
     entrypoint: 'bash'
     args:
@@ -71,16 +68,13 @@ steps:
       - |
         skaffold run --default-repo=gcr.io/$PROJECT_ID --profile=non-prod
 
-
-  # Step 11: Create a release in Cloud Deploy for non-prod
+  # Step 9: Create a release in Cloud Deploy for non-prod
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        NON_PROD_RELEASE_NAME=$(cat /workspace/non_prod_release_name.txt)
-        gcloud deploy releases create "$NON_PROD_RELEASE_NAME" \
-        --delivery-pipeline=text-generator-pipeline \
+        gcloud deploy releases create --delivery-pipeline=text-generator-pipeline \
         --region=us-central1 \
         --images=gcr.io/$PROJECT_ID/text-generator=gcr.io/$PROJECT_ID/text-generator:latest \
         --targets=non-prod
