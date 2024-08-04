@@ -23,7 +23,7 @@ metadata:
 description: Development environment
 requireApproval: true
 gke:
-  cluster: projects/kunal-ica1/locations/us-central1-a/clusters/my-cluster
+  cluster: projects/ethereal-smoke-422723-i0/locations/us-central1-a/clusters/my-cluster
  
 ---
 apiVersion: deploy.cloud.google.com/v1
@@ -33,5 +33,5 @@ metadata:
 description: production environment
 requireApproval: true
 gke:
-  cluster: projects/kunal-ica1/locations/us-central1-a/clusters/my-cluster
+  cluster: projects/ethereal-smoke-422723-i0/locations/us-central1-a/clusters/my-cluster
 

@@ -4,6 +4,6 @@ resources:
 namespace: prod
 
 images:
-  - name: gcr.io/kunal-ica1/text-generator
-    newName: gcr.io/kunal-ica1/text-generator
+  - name: gcr.io/ethereal-smoke-422723-i0/text-generator
+    newName: gcr.io/ethereal-smoke-422723-i0/text-generator
     newTag: prod

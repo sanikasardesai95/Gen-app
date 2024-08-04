@@ -4,9 +4,9 @@ metadata:
   name: text-generator
 build:
   artifacts:
-    - image: gcr.io/kunal-ica1/text-generator
+    - image: gcr.io/ethereal-smoke-422723-i0/text-generator
   googleCloudBuild:
-    projectId: kunal-ica1
+    projectId: ethereal-smoke-422723-i0
 deploy:
   kustomize:
     paths:

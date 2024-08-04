@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request
 import requests
+import os
 
 app = Flask(__name__)
 
-API_KEY = "AIzaSyD4_2KK1Z8LHvQMKcSHrr44qoQk5VyCQMk"
+API_KEY = "AIzaSyAcCFqcSUUsXNJYcBw0oPdlaLEitlxiyfc"
 ENDPOINT_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + API_KEY
 
 def generate_text(prompt):
